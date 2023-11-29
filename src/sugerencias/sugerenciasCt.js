@@ -20,7 +20,15 @@ const addOne = async (req, res) => {
 
 
 const deleteOne = async (req, res) => {
-
+    try {
+        const { id } = req.params;
+        const result = await db.promise().query('DELETE FROM sugerencias WHERE id = ?', [id]);
+    
+        result.affectedRows > 0 ?  res.status(404).json({ message: 'No se encontró la sugerencia para eliminar' }) : res.json({ message: 'Sugerencia eliminada correctamente' })
+      } catch (error) {
+        console.error('Error al eliminar sugerencia:', error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+      }
 }
 
 module.exports = { addOne, getAll, deleteOne };

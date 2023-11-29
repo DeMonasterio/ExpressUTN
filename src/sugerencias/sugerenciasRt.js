@@ -6,6 +6,6 @@ const { getbyId } = require("../sugerencias/sugerenciasMD");
 routerSugerencias.post("/", addOne);
 routerSugerencias.get("/", getAll);
 routerSugerencias.get("/:id", getbyId);
-routerSugerencias.delete("/", deleteOne);
+routerSugerencias.delete("/:id", deleteOne);
 
 module.exports = routerSugerencias;
