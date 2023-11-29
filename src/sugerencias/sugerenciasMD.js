@@ -1,11 +1,23 @@
-const db = require("../../db_config")
+const db = require("../../db_config");
 
 class SugerenciasMd {
-    static async addOne(req, res){
-        res.header("Access-Control-Allow-Origin", `http://localhost:5173/contacto`);
-        const [resultados] = await db.promise().query("SELECT * FROM sugerencias");
-        res.send(resultados);
+    static async getbyId(req, res) {
+        try {
+            const { id } = req.params;
+            console.log(id);
+
+            const [resultados] = await db.promise().query('SELECT * FROM sugerencias WHERE id = ?', [id]);
+
+            if (resultados.length > 0) {
+                res.json(resultados);
+            } else {
+                res.status(404).json({ message: 'No se encontraron sugerencias con el ID proporcionado.' });
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Error interno del servidor.' });
+        }
     }
 }
 
-module.exports = SugerenciasMd
+module.exports = SugerenciasMd;
