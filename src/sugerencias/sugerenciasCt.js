@@ -14,11 +14,11 @@ const addOne = async (req, res) => {
     const {title, description, image} = req.body;
     const [suggestion] = await db.promise().query('INSERT INTO sugerencias (title, description, image) VALUES (?, ?, ?)', [title, description, image])
     if (suggestion) {
-        res.send({id: suggestion.insertId,title,description,image})
-        res.status(201).send('Suggestion added successfully');
+        res.status(201).send({id: suggestion.insertId, title, description, image});
     } else {
         console.error('Failed to insert suggestion into database');
         res.status(500).send('Failed to insert suggestion into database');
+        return;
     }
 }
 
