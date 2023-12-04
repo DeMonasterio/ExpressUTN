@@ -21,8 +21,35 @@ const addOne = async (req, res) => {
         return;
     }
 }
+const updateOne = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updatedData = req.body;
 
-
+      const [existingSuggestion] = await db
+        .promise()
+        .execute('SELECT id FROM sugerencias WHERE id = ?', [id]);
+  
+      if (!existingSuggestion.length) {
+        return res.status(404).json({ msg: 'Sugerencia no encontrada' });
+      }
+  
+      // Update the suggestion
+      const queryString = 'UPDATE sugerencias SET title = ?, description = ?, image = ? WHERE id = ?';
+      const values = [updatedData.title, updatedData.description, updatedData.image, id];
+  
+      const [result] = await db.promise().execute(queryString, values);
+  
+      if (result.affectedRows === 0) {
+        return res.status(500).json({ msg: 'Error al actualizar la sugerencia' });
+      }
+      res.status(202).json({ msg: 'Actualización aceptada' });
+  
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Error del servidor');
+    }
+  };
 
 const deleteOne = async (req, res) => {
     try {
@@ -33,7 +60,8 @@ const deleteOne = async (req, res) => {
       } catch (error) {
         console.error('Failed to delete the suggestion:', error);
         res.status(500).json({ message: 'Internal server error' });
+        return;
       }
 }
 
-module.exports = { addOne, getAll, deleteOne };
+module.exports = { addOne, getAll, updateOne, deleteOne };
